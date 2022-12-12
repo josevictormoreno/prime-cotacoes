@@ -1,27 +1,47 @@
 import express from 'express'
-import puppeteer from "puppeteer";
+import routes from './routes'
+import http from "http";
 
 const server = express()
-
-server.get('/dolar', async  (request, response) => {
-    console.log("Pesquisando o valor do dolar!");
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto('https://www.google.com/search?q=dolar&sxsrf=ALiCzsbHDZsdh2ptO0x3uh8iEQHuT6wqkg%3A1667865643031&ei=K5xpY4a1AYDN1sQPvdeuuAk&ved=0ahUKEwjG9r3Zo537AhWAppUCHb2rC5cQ4dUDCA8&uact=5&oq=dolar&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIJCCMQJxBGEIICMgQIIxAnMgoIABCxAxCDARBDMgsIABCABBCxAxCDATILCAAQgAQQsQMQgwEyCwgAEIAEELEDEIMBMgoIABCxAxCDARBDMgoILhDHARDRAxBDMgQIABBDMgsIABCABBCxAxCDAToKCAAQRxDWBBCwAzoHCAAQsAMQQzoNCAAQ5AIQ1gQQsAMYAToMCC4QyAMQsAMQQxgCOggILhCxAxCDAToOCC4QgAQQsQMQgwEQ1AI6CwguEIAEEMcBENEDOgsILhCxAxCDARDUAjoGCCMQJxATOgQILhBDOg0IABCABBCxAxCDARAKSgQITRgBSgQIQRgASgQIRhgBUJ4KWNYNYPQOaAFwAXgAgAG3AYgB7AWSAQMwLjWYAQCgAQHIARLAAQHaAQYIARABGAnaAQYIAhABGAg&sclient=gws-wiz-serp');
-//    await page.screenshot({path: 'tabela.png'}); Comando para tirar print da tela!
-
-    const content = await page.evaluate(() => {
-
-
-            value: document.querySelector(".SwHCTb").innerHTML
-
+const StartServer = () => {
+    server.use((req, res, next) => {
+      console.log(
+        `Request -> ${req.method} | IP -> ${req.socket.remoteAddress}`
+      );
+      res.on("finish", () => {
+        console.log(
+          `Done! URL -> ${req.url} | IP -> ${req.socket.remoteAddress} | Status -> ${res.statusCode}`
+        );
+      });
+      next();
     });
-//    await browser.close();
-    if(content)
-        response.send(content.value);
-})
-server.listen(3000, () => {
-    console.log('Serer up on port 3000!')
-})
-
+  
+    server.use(express.urlencoded({ extended: true }));
+    server.use(express.json());
+    server.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      );
+      if (req.method == "OPTIONS") {
+        res.header("Access-Control-Allow-Methods", "PUT, POST, DELETE, GET");
+        return res.status(200).json({});
+      }
+  
+      next();
+    });
+    server.use("/api", routes);
+    server.get("/ping", (req, res, next) => {
+      res.status(200).json({ message: "pong" });
+    });
+    server.use((req, res, next) => {
+      console.log("Route - Not found");
+      return res.status(404).json({ message: "Route - Not Found" });
+    });
+    http.createServer(server).listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  };
+  
+  StartServer()
