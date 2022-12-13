@@ -40,16 +40,16 @@ const getLibra = async (req: Request, res: Response, next: NextFunction) => {
 const getCoffe = async (req: Request, res: Response, next: NextFunction) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto('https://www.noticiasagricolas.com.br/cotacoes/cafe')
+  await page.goto('http://www.cccv.org.br/')
   const result = await page.evaluate(() => {
-    const rows = document.querySelectorAll('.cot-fisicas tr');
+    const rows = document.querySelectorAll('.table-body li');
     return Array.from(rows, row => {
-      const columns = row.querySelectorAll('td');
+      const columns = row.querySelectorAll('p');
       return Array.from(columns, column => column.innerText);
     });
   });
-  res.status(200).json({"cafe arabica": result})
-  res.status(200).json({"cafe arabica": result[1][1], "cafe conilon": result[4][1]})
+  // res.status(200).json({"cafe arabica": result})
+  res.status(200).json({Fonte: "Tv CCCV","cafe arabica dura": result[3][0], "cafe arabica rio": result[5][0], "cafe conilon": result[9][0]})
 }
 const getCoin = async (req: Request, res: Response, next: NextFunction) => {
   const dollar = await getDollar(req, res, next)
