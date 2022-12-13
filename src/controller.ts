@@ -37,7 +37,7 @@ const getLibra = async (req: Request, res: Response, next: NextFunction) => {
   });
   return content.value
 }
-const getCoffe = async (req: Request, res: Response, next: NextFunction) => {
+const getCoffeTv = async (req: Request, res: Response, next: NextFunction) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('http://www.cccv.org.br/')
@@ -51,6 +51,20 @@ const getCoffe = async (req: Request, res: Response, next: NextFunction) => {
   // res.status(200).json({"cafe arabica": result})
   res.status(200).json({Fonte: "Tv CCCV","cafe arabica dura": result[3][0], "cafe arabica rio": result[5][0], "cafe conilon": result[9][0]})
 }
+const getCoffeCooabriel = async (req: Request, res: Response, next: NextFunction) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://cooabriel.coop.br/en/')
+  const result = await page.evaluate(() => {
+    const rows = document.querySelectorAll('.tbCoffee tr');
+    return Array.from(rows, row => {
+      const columns = row.querySelectorAll('td');
+      return Array.from(columns, column => column.innerText);
+    });
+  });
+  //res.status(200).json({"cafe arabica": result})
+  res.status(200).json({Fonte: "Cooabriel","cafe conilon 7/8": result[1][1]})
+}
 const getCoin = async (req: Request, res: Response, next: NextFunction) => {
   const dollar = await getDollar(req, res, next)
   const euro = await getEuro(req, res, next)
@@ -58,4 +72,4 @@ const getCoin = async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({"dolar": dollar, "libra": libra, "euro": euro})
 }
 
-export default {getCoin, getCoffe}
+export default {getCoin, getCoffeTv, getCoffeCooabriel}
