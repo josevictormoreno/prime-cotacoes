@@ -2,8 +2,7 @@ import express from 'express'
 import controller from './controller'
 
 const router = express.Router()
-router.get('/coins', controller.getCoin)
-router.get('/coffe', controller.getCoffeTv)
-router.get('/coffeC', controller.getCoffeCooabriel)
+router.get('/info', controller.getInfo)
+router.get('/test', controller.getDate)
 
 export = router
