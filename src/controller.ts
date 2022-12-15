@@ -56,15 +56,14 @@ const getCoffeCooabriel = async (req: Request, res: Response, next: NextFunction
   return result[1][1]
 }
 const getDate = (req: Request, res: Response, next: NextFunction) => {
-  let day = new Date().getUTCDay().toString()
-  let month = new Date().getMonth().toString()
+  let day = new Date().getDate().toLocaleString()
+  let month = (new Date().getMonth() + 1).toString()
   let year = new Date().getFullYear().toString()
   let date = '' 
-  date = date.concat(day, '/', month, '/', year)
-  
-  res.status(200).json({data: date});
+  return date = date.concat(day, '/', month, '/', year)
 }
 const getInfo = async (req: Request, res: Response, next: NextFunction) => {
+  const date = getDate(req,res,next)
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   const dollar = await getDollar(req, res, next, page)
@@ -74,7 +73,7 @@ const getInfo = async (req: Request, res: Response, next: NextFunction) => {
   const tv = await getCoffeTv(req, res, next, page)
   const message = 
   `🌱Prime Corretora de Café🌱 Linhares
-  📈 * Cotações ${Date()} * 📉
+  📈 * Cotações ${date} * 📉
   Dolar 🇺🇸 ${dollar}
   Libra 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ${libra}
   Euro 🇪🇺 ${euro}
