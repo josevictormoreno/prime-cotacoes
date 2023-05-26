@@ -39,8 +39,8 @@ const StartServer = () => {
       console.log("Route - Not found");
       return res.status(404).json({ message: "Route - Not Found" });
     });
-    http.createServer(server).listen(3000, () => {
-      console.log("Server is running on port 3000");
+    http.createServer(server).listen(8080, () => {
+      console.log("Server is running on port 2222");
     });
   };
   
