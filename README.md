@@ -3,4 +3,4 @@ Crawler e automatização de mensagem
 
 
 ## TODO 
-- Adicionar no servidor
+- No servidor !!
