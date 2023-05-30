@@ -4,3 +4,4 @@ Crawler e automatização de mensagem
 
 ## TODO 
 - No servidor !!
+- Corrigir puppteer
